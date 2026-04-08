@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partitia — Cryptographic Trust Boundaries for AI Agents</title>
+    <meta name="description" content="Partitia enforces information barriers when AI agents operate across multiple confidential contexts. Your keys stay on your device.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --parchment: #f8f6f1;
+            --gold: #b8860b;
+            --gold-light: #d4a843;
+            --slate: #4a4a5a;
+            --mist: #e8e6e1;
+            --accent: #2d5a7b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* -- Musical staff lines as subtle background -- */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 79px,
+                rgba(180, 170, 155, 0.08) 79px,
+                rgba(180, 170, 155, 0.08) 80px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* -- Header -- */
+        header {
+            padding: 4rem 0 3rem;
+            text-align: center;
+            animation: fadeDown 1s ease-out;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-mark {
+            display: inline-block;
+            width: 56px;
+            height: 56px;
+            border: 2.5px solid var(--gold);
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-mark::after {
+            content: '𝄞';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            color: var(--gold);
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            margin-bottom: 0.3rem;
+        }
+
+        .tagline {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--slate);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        /* -- Divider -- */
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: var(--gold);
+            margin: 2.5rem auto;
+        }
+
+        /* -- Hero statement -- */
+        .hero {
+            text-align: center;
+            padding: 0 0 2rem;
+            animation: fadeUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.55rem;
+            line-height: 1.8;
+            color: var(--ink);
+            max-width: 640px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero .keys-statement {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.02em;
+            padding: 0.8rem 1.6rem;
+            border: 1px solid var(--gold);
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        /* -- Credentials -- */
+        .credentials {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem 2rem;
+            padding: 2rem 0;
+            animation: fadeUp 1s ease-out 0.6s both;
+        }
+
+        .credential {
+            font-size: 0.88rem;
+            color: var(--slate);
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .credential::before {
+            content: '·';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* -- Sections -- */
+        section {
+            padding: 3rem 0;
+            animation: fadeUp 0.8s ease-out both;
+        }
+
+        section:nth-child(4) { animation-delay: 0.2s; }
+        section:nth-child(5) { animation-delay: 0.4s; }
+        section:nth-child(6) { animation-delay: 0.6s; }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--ink);
+        }
+
+        section p {
+            font-size: 1.02rem;
+            color: var(--slate);
+            margin-bottom: 1rem;
+            max-width: 680px;
+        }
+
+        /* -- "What we don't build" as a contrast block -- */
+        .contrast-block {
+            background: var(--ink);
+            color: var(--parchment);
+            padding: 2.5rem 2.5rem;
+            border-radius: 3px;
+            margin: 2rem 0;
+        }
+
+        .contrast-block h2 {
+            color: var(--gold-light);
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .contrast-block p {
+            color: rgba(248, 246, 241, 0.85);
+            max-width: none;
+        }
+
+        /* -- Musical coda -- */
+        .coda {
+            border-top: 1px solid var(--mist);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .coda p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: var(--slate);
+            max-width: 600px;
+            margin: 0 auto 1rem;
+            line-height: 1.9;
+        }
+
+        .coda a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(45, 90, 123, 0.3);
+            transition: border-color 0.2s;
+        }
+
+        .coda a:hover {
+            border-color: var(--accent);
+        }
+
+        /* -- Footer -- */
+        footer {
+            text-align: center;
+            padding: 2rem 0 4rem;
+            border-top: 1px solid var(--mist);
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        footer a:hover { color: var(--gold-light); }
+
+        .footer-title {
+            font-size: 0.88rem;
+            color: var(--slate);
+            margin-bottom: 0.3rem;
+        }
+
+        .footer-contact {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-copy {
+            font-size: 0.78rem;
+            color: rgba(74, 74, 90, 0.5);
+            margin-top: 1rem;
+        }
+
+        /* -- Responsive -- */
+        @media (max-width: 640px) {
+            h1 { font-size: 2.6rem; }
+            .hero p { font-size: 1.25rem; }
+            .container { padding: 0 1.2rem; }
+            .contrast-block { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <div class="logo-mark"></div>
+        <h1>Partitia</h1>
+        <div class="tagline">Cryptographic trust boundaries for AI agents</div>
+    </header>
+
+    <div class="hero">
+        <p>Partitia enforces information barriers when AI agents operate across multiple confidential contexts. Board directors, PE firms, and consultants can finally use AI without risking cross-matter data leakage.</p>
+        <span class="keys-statement">Your keys stay on your device. Cloud agents can reason but cannot act alone.</span>
+    </div>
+
+    <div class="credentials">
+        <span class="credential">Patent pending (USPTO, March 2026)</span>
+        <span class="credential">Grounded in OWASP, NIST &amp; TLP standards</span>
+        <span class="credential">724 tests, 12 rounds of adversarial review</span>
+        <span class="credential">Open source core (coming soon)</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <section>
+        <h2>How it works</h2>
+        <p>Your local Guardian daemon holds your encryption keys, API credentials, and tool access — and enforces every data access decision. Cloud agents are stateless: they receive only short-lived transport certificates. They can reason and talk to the Guardian, but they cannot decrypt your data or act without Guardian approval.</p>
+        <p>The agent doesn't even know what it can't access.</p>
+    </section>
+
+    <div class="contrast-block">
+        <h2>What we don't build</h2>
+        <p>We don't build scanners (Cisco does that), sandboxes (Docker does that), or trust scoring (Microsoft does that). We build the enforcement plane that composes them into cryptographic trust boundaries for regulated professionals.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <section class="coda">
+        <p>In music, a <em>Partita</em> is a suite of variations — each movement distinct, yet bound by a common theme. Johann Sebastian Bach composed six famous Partitas for solo violin; Vanessa Mae made the <a href="https://www.youtube.com/watch?v=4g5Q1p6C7ho" target="_blank" rel="noopener">Partita in E major</a> unforgettable.</p>
+        <p>In our world, a <em>Partitia</em> is a suite of trust boundaries — each partition distinct, yet enforced by a common Guardian. Different data, different agents, different clearances — one cryptographic theme holding it all together.</p>
+    </section>
+
+    <footer>
+        <div class="footer-title">Harvard ALI Fellow · MIT Agentic AI Infrastructure</div>
+        <div class="footer-contact"><a href="mailto:alexander@landia.biz">alexander@landia.biz</a></div>
+        <div class="footer-copy">© 2026 Partitia</div>
+    </footer>
+
+</div>
+
+</body>
+</html>
